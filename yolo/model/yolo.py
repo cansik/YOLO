@@ -173,8 +173,31 @@ def create_model(model_cfg: ModelConfig, weight_path: Union[bool, Path] = True, 
             logger.info(f"🌐 Weight {weight_path} not found, try downloading")
             prepare_weight(weight_path=weight_path)
         if weight_path.exists():
-            model.save_load_weights(weight_path)
-            logger.info(":white_check_mark: Success load model & weight")
+            if weight_path.suffix == ".ckpt":
+                checkpoint = torch.load(weight_path)
+                state_dict = checkpoint['state_dict']
+
+                # Fix the keys in the checkpoint
+                new_state_dict = {}
+
+                for key, value in state_dict.items():
+                    if key.startswith("model.model."):
+                        new_key = key.replace("model.model.", "model.", 1)  # Replace only the first occurrence
+                        new_state_dict[new_key] = value
+                    else:
+                        new_state_dict[key] = value
+
+                # Load new state dict
+                model.load_state_dict(new_state_dict, strict=False)
+
+                for name, param in model.named_parameters():
+                    if name not in new_state_dict:
+                        print(f"Missing weight for layer: {name}")
+
+                logger.info(":white_check_mark: Success load model & checkpoint")
+            else:
+                model.save_load_weights(weight_path)
+                logger.info(":white_check_mark: Success load model & weight")
     else:
         logger.info(":white_check_mark: Success load model")
     return model
