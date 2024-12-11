@@ -80,7 +80,7 @@ class YoloDataset(Dataset):
         Returns:
             list: A list of tuples, each containing the path to an image file and its associated segmentation as a tensor.
         """
-        images_path = dataset_path / "images" / phase_name
+        images_path = dataset_path / phase_name
         labels_path, data_type = locate_label_paths(dataset_path, phase_name)
         images_list = sorted([p.name for p in Path(images_path).iterdir() if p.is_file()])
         if data_type == "json":
@@ -228,6 +228,7 @@ def create_dataloader(data_cfg: DataConfig, dataset_cfg: DatasetConfig, task: st
         num_workers=data_cfg.cpu_num,
         pin_memory=data_cfg.pin_memory,
         collate_fn=collate_fn,
+        persistent_workers=True
     )
 
 

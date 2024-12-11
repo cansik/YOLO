@@ -24,7 +24,7 @@ def locate_label_paths(dataset_path: Path, phase_name: Path) -> Tuple[Path, Path
     """
     json_labels_path = dataset_path / "annotations" / f"instances_{phase_name}.json"
 
-    txt_labels_path = dataset_path / "labels" / phase_name
+    txt_labels_path = dataset_path / phase_name
 
     if json_labels_path.is_file():
         return json_labels_path, "json"
