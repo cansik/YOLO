@@ -138,17 +138,24 @@ class YoloDataset(Dataset):
         for seg_data in seg_data_one_img:
             cls = seg_data[0]
             # warning: wrong method (cause labels are cx, cy, w, h)
-            # points = np.array(seg_data[1:]).reshape(-1, 2)
+            points = np.array(seg_data[1:]).reshape(-1, 2)
 
-            # new method to convert yolo labels
-            x, y, w, h = seg_data[1:]
-            x_min = x - w / 2
-            x_max = x + w / 2
-            y_min = y - h / 2
-            y_max = y + h / 2
+            # check if is yolo format
+            if len(points) == 2:
+                # new method to convert yolo labels
+                x, y, w, h = seg_data[1:]
+                x_min = x - w / 2
+                x_max = x + w / 2
+                y_min = y - h / 2
+                y_max = y + h / 2
 
-            points2 = np.array([x_min, y_min, x_max, y_max]).reshape(-1, 2)
-            points = np.clip(points2, 0, 1)
+                points_min_max = np.array([[x_min, y_min], [x_max, y_max]])
+
+                if points_min_max.min() <= 0 or points_min_max.max() >= 1:
+                    continue
+                # points_clipped = np.clip(points_min_max, 0, 1)
+
+                points = points_min_max
 
             # todo: refactor this, because if a point is not valid the resahpe won't work
             valid_points = points[(points >= 0) & (points <= 1)].reshape(-1, 2)
