@@ -305,7 +305,7 @@ class Vec2Box:
             logger.info(f":japanese_not_free_of_charge_button: Found stride of model {anchor_cfg.strides}")
             self.strides = anchor_cfg.strides
         else:
-            logger.info("🧸 Found no stride of model, performed a dummy test for auto-anchor size")
+            logger.info("Found no stride of model, performed a dummy test for auto-anchor size")
             self.strides = self.create_auto_anchor(model, image_size)
 
         anchor_grid, scaler = generate_anchors(image_size, self.strides)
@@ -358,7 +358,7 @@ class Anc2Box:
             logger.info(f":japanese_not_free_of_charge_button: Found stride of model {anchor_cfg.strides}")
             self.strides = anchor_cfg.strides
         else:
-            logger.info("🧸 Found no stride of model, performed a dummy test for auto-anchor size")
+            logger.info("Found no stride of model, performed a dummy test for auto-anchor size")
             self.strides = self.create_auto_anchor(model, image_size)
 
         self.head_num = len(anchor_cfg.anchor)
